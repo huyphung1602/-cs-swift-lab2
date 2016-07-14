@@ -22,6 +22,7 @@ class GithubRepo: CustomStringConvertible {
   var stars = 0
   var forks = 0
   var repoDescription = ""
+  var language = ""
 
   // Initializes a GitHubRepo from a JSON dictionary
   init(jsonResult: NSDictionary) {
@@ -48,6 +49,10 @@ class GithubRepo: CustomStringConvertible {
 
     if let description = jsonResult["description"] as? String {
       self.repoDescription = description
+    }
+
+    if let language = jsonResult["language"] as? String {
+      self.language = language
     }
   }
 
@@ -76,26 +81,31 @@ class GithubRepo: CustomStringConvertible {
   // GitHub API
   private class func queryParamsWithSettings() -> [String: String] {
     let settings = GithubRepoSearchSettings.sharedInstance
-    var params: [String:String] = [:];
+    var params: [String:String] = [:]
     if let clientId = clientId {
-      params["client_id"] = clientId;
+      params["client_id"] = clientId
     }
 
     if let clientSecret = clientSecret {
-      params["client_secret"] = clientSecret;
+      params["client_secret"] = clientSecret
     }
 
-    var q = "";
+    var q = ""
     if let searchString = settings.searchString {
-      q = q + searchString;
+      q = q + searchString
     }
     q = q + " stars:>\(settings.minStars)"
-    params["q"] = q;
 
-    params["sort"] = "stars";
-    params["order"] = "desc";
+    if settings.language != "" {
+      q = q + " language:\(settings.language.lowercaseString)"
+    }
 
-    return params;
+    params["q"] = q
+
+    params["sort"] = "stars"
+    params["order"] = "desc"
+
+    return params
   }
 
   // Creates a text representation of a GitHub repo

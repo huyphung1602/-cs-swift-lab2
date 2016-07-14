@@ -32,6 +32,7 @@ class RepoResultsViewController: UIViewController {
 
     tableView.estimatedRowHeight = 120
     tableView.rowHeight = UITableViewAutomaticDimension
+    tableView.tableFooterView = UIView()
 
     // Perform the first search when the view controller first loads
     doSearch()

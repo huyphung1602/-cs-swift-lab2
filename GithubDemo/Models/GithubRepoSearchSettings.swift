@@ -12,6 +12,7 @@ import Foundation
 class GithubRepoSearchSettings {
   var searchString: String?
   var minStars = 0
+  var language = ""
 
   static let sharedInstance = GithubRepoSearchSettings()
   
