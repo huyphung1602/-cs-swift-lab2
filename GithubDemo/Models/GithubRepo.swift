@@ -55,7 +55,7 @@ class GithubRepo: CustomStringConvertible {
   // Calls successCallback(...) if the request is successful
   class func fetchRepos(settings: GithubRepoSearchSettings, successCallback: ([GithubRepo]) -> Void, error: ((NSError?) -> Void)?) {
     let manager = AFHTTPRequestOperationManager()
-    let params = queryParamsWithSettings(settings);
+    let params = queryParamsWithSettings()
 
     manager.GET(reposUrl, parameters: params, success: { (operation ,responseObject) -> Void in
       if let results = responseObject["items"] as? NSArray {
@@ -74,7 +74,8 @@ class GithubRepo: CustomStringConvertible {
 
   // Helper method that constructs a dictionary of the query parameters used in the request to the
   // GitHub API
-  private class func queryParamsWithSettings(settings: GithubRepoSearchSettings) -> [String: String] {
+  private class func queryParamsWithSettings() -> [String: String] {
+    let settings = GithubRepoSearchSettings.sharedInstance
     var params: [String:String] = [:];
     if let clientId = clientId {
       params["client_id"] = clientId;

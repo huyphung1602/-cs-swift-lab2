@@ -58,6 +58,15 @@ class RepoResultsViewController: UIViewController {
         print(error)
     })
   }
+
+  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    if segue.identifier == "ResultsToSettings" {
+      if let nvc = segue.destinationViewController as? UINavigationController, settingsVC = nvc.topViewController as? SettingsViewController {
+        settingsVC.delegate = self
+      }
+    }
+  }
+
 }
 
 // SearchBar methods
@@ -95,6 +104,14 @@ extension RepoResultsViewController: UITableViewDelegate, UITableViewDataSource 
     let cell = tableView.dequeueReusableCellWithIdentifier("GithubCell", forIndexPath: indexPath) as! GithubCell
     cell.repo = repos[indexPath.row]
     return cell
+  }
+
+}
+
+extension RepoResultsViewController: SettingsViewControllerDelegate {
+
+  func settingsViewControllerDidUpdate(settingsViewController: SettingsViewController) {
+    doSearch()
   }
 
 }
