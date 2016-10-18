@@ -27,8 +27,8 @@ class GithubCell: UITableViewCell {
       ownerLabel.text = repo.ownerHandle
       descriptionLabel.text = repo.repoDescription
       languageLabel.text = repo.language
-      if let url = NSURL(string: repo.ownerAvatarURL) {
-        avatarImageView.setImageWithURL(url)
+      if let url = URL(string: repo.ownerAvatarURL) {
+        avatarImageView.setImageWith(url)
       }
     }
   }

@@ -15,7 +15,7 @@ class SelectCell: UITableViewCell {
 
   override func awakeFromNib() {
     super.awakeFromNib()
-    checkImageView.hidden = true
+    checkImageView.isHidden = true
   }
 
 }

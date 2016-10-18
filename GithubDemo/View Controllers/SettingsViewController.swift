@@ -9,7 +9,7 @@
 import UIKit
 
 @objc protocol SettingsViewControllerDelegate {
-  optional func settingsViewControllerDidUpdate(settingsViewController: SettingsViewController)
+  @objc optional func settingsViewControllerDidUpdate(_ settingsViewController: SettingsViewController)
 }
 
 class SettingsViewController: UIViewController {
@@ -32,27 +32,27 @@ class SettingsViewController: UIViewController {
     tableView.tableFooterView = UIView()
   }
 
-  @IBAction func onSaveButtonTapped(sender: UIBarButtonItem) {
+  @IBAction func onSaveButtonTapped(_ sender: UIBarButtonItem) {
     let settings = GithubRepoSearchSettings.sharedInstance
     settings.minStars = minStars
     settings.language = switchOn ? selectedLanguage : ""
     delegate?.settingsViewControllerDidUpdate?(self)
-    dismissViewControllerAnimated(true, completion: nil)
+    dismiss(animated: true, completion: nil)
   }
 
-  @IBAction func onCancelButtonTapped(sender: UIBarButtonItem) {
-    dismissViewControllerAnimated(true, completion: nil)
+  @IBAction func onCancelButtonTapped(_ sender: UIBarButtonItem) {
+    dismiss(animated: true, completion: nil)
   }
 
 }
 
 extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
 
-  func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+  func numberOfSections(in tableView: UITableView) -> Int {
     return 2
   }
 
-  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     switch section {
     case 0: return 1
     case 1: return languages.count + 1
@@ -60,42 +60,42 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
     }
   }
 
-  func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+  func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 44))
-    header.backgroundColor = UIColor.clearColor()
+    header.backgroundColor = UIColor.clear
     return header
   }
 
-  func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     if switchOn {
       return 44
     } else {
-      switch indexPath.section {
+      switch (indexPath as NSIndexPath).section {
       case 0: return 44
-      case 1: return indexPath.row == 0 ? 44 : 0
+      case 1: return (indexPath as NSIndexPath).row == 0 ? 44 : 0
       default: return 0
       }
     }
   }
 
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    switch indexPath.section {
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    switch (indexPath as NSIndexPath).section {
     case 0:
-      let cell = tableView.dequeueReusableCellWithIdentifier("SliderCell", forIndexPath: indexPath) as! SliderCell
+      let cell = tableView.dequeueReusableCell(withIdentifier: "SliderCell", for: indexPath) as! SliderCell
       cell.delegate = self
       return cell
 
     case 1:
-      if indexPath.row == 0 {
-        let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
-        cell.onSwitch.on = switchOn
+      if (indexPath as NSIndexPath).row == 0 {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
+        cell.onSwitch.isOn = switchOn
         cell.delegate = self
         return cell
       } else {
-        let cell = tableView.dequeueReusableCellWithIdentifier("SelectCell", forIndexPath: indexPath) as! SelectCell
-        let language = languages[indexPath.row - 1]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SelectCell", for: indexPath) as! SelectCell
+        let language = languages[(indexPath as NSIndexPath).row - 1]
         cell.languageLabel.text = language
-        cell.checkImageView.hidden = language != selectedLanguage
+        cell.checkImageView.isHidden = language != selectedLanguage
         return cell
       }
 
@@ -104,11 +104,11 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
     }
   }
 
-  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    if indexPath.section == 1 {
-      if indexPath.row != 0 {
-        selectedLanguage = languages[indexPath.row - 1]
-        tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .None)
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    if (indexPath as NSIndexPath).section == 1 {
+      if (indexPath as NSIndexPath).row != 0 {
+        selectedLanguage = languages[(indexPath as NSIndexPath).row - 1]
+        tableView.reloadSections(IndexSet(integer: 1), with: .none)
       }
     }
   }
@@ -117,7 +117,7 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
 
 extension SettingsViewController: SliderCellDelegate {
 
-  func sliderCell(sliderCell: SliderCell, didUpdateSlider starValue: Int) {
+  func sliderCell(_ sliderCell: SliderCell, didUpdateSlider starValue: Int) {
     minStars = starValue
   }
 
@@ -125,12 +125,12 @@ extension SettingsViewController: SliderCellDelegate {
 
 extension SettingsViewController: SwitchCellDelegate {
 
-  func switchCellDidSwitchChanged(switchCell: SwitchCell) {
-    switchOn = switchCell.onSwitch.on
+  func switchCellDidSwitchChanged(_ switchCell: SwitchCell) {
+    switchOn = switchCell.onSwitch.isOn
     if selectedLanguage == "" {
       selectedLanguage = languages[0]
     }
-    tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
+    tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
   }
 
 }

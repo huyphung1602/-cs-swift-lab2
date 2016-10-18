@@ -39,10 +39,10 @@ class RepoResultsViewController: UIViewController {
   }
 
   // Perform the search.
-  private func doSearch() {
+  fileprivate func doSearch() {
     GithubRepoSearchSettings.sharedInstance.searchString = searchBar.text
 
-    MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+    MBProgressHUD.showAdded(to: self.view, animated: true)
 
     // Perform request to GitHub API to get the list of repositories
     GithubRepo.fetchRepos(searchSettings, successCallback: { (newRepos) -> Void in
@@ -52,18 +52,18 @@ class RepoResultsViewController: UIViewController {
         print(repo)
       }
       self.repos.removeAll()
-      self.repos.appendContentsOf(newRepos)
+      self.repos.append(contentsOf: newRepos)
       self.tableView.reloadData()
 
-      MBProgressHUD.hideHUDForView(self.view, animated: true)
+      MBProgressHUD.hide(for: self.view, animated: true)
       }, error: { (error) -> Void in
         print(error)
     })
   }
 
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "ResultsToSettings" {
-      if let nvc = segue.destinationViewController as? UINavigationController, settingsVC = nvc.topViewController as? SettingsViewController {
+      if let nvc = segue.destination as? UINavigationController, let settingsVC = nvc.topViewController as? SettingsViewController {
         settingsVC.delegate = self
       }
     }
@@ -74,23 +74,23 @@ class RepoResultsViewController: UIViewController {
 // SearchBar methods
 extension RepoResultsViewController: UISearchBarDelegate {
 
-  func searchBarShouldBeginEditing(searchBar: UISearchBar) -> Bool {
+  func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
     searchBar.setShowsCancelButton(true, animated: true)
     return true
   }
 
-  func searchBarShouldEndEditing(searchBar: UISearchBar) -> Bool {
+  func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
     searchBar.setShowsCancelButton(false, animated: true)
     return true
   }
 
-  func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+  func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
     searchBar.text = ""
     searchBar.resignFirstResponder()
     doSearch()
   }
 
-  func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+  func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
     searchSettings.searchString = searchBar.text
     searchBar.resignFirstResponder()
     doSearch()
@@ -99,13 +99,13 @@ extension RepoResultsViewController: UISearchBarDelegate {
 
 extension RepoResultsViewController: UITableViewDelegate, UITableViewDataSource {
 
-  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return repos.count
   }
 
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCellWithIdentifier("GithubCell", forIndexPath: indexPath) as! GithubCell
-    cell.repo = repos[indexPath.row]
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell = tableView.dequeueReusableCell(withIdentifier: "GithubCell", for: indexPath) as! GithubCell
+    cell.repo = repos[(indexPath as NSIndexPath).row]
     return cell
   }
 
@@ -113,7 +113,7 @@ extension RepoResultsViewController: UITableViewDelegate, UITableViewDataSource 
 
 extension RepoResultsViewController: SettingsViewControllerDelegate {
 
-  func settingsViewControllerDidUpdate(settingsViewController: SettingsViewController) {
+  func settingsViewControllerDidUpdate(_ settingsViewController: SettingsViewController) {
     doSearch()
   }
 

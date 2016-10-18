@@ -9,7 +9,7 @@
 import UIKit
 
 @objc protocol SliderCellDelegate {
-  optional func sliderCell(sliderCell: SliderCell, didUpdateSlider starValue: Int)
+  @objc optional func sliderCell(_ sliderCell: SliderCell, didUpdateSlider starValue: Int)
 }
 
 class SliderCell: UITableViewCell {
@@ -26,7 +26,7 @@ class SliderCell: UITableViewCell {
     starLabel.text = "\(starValue)"
   }
 
-  @IBAction func onSliderChanged(sender: UISlider) {
+  @IBAction func onSliderChanged(_ sender: UISlider) {
     let value = Int(slider.value)
     starLabel.text = "\(value)"
     delegate?.sliderCell?(self, didUpdateSlider: value)

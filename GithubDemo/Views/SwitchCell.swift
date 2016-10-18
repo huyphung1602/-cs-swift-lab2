@@ -9,7 +9,7 @@
 import UIKit
 
 @objc protocol SwitchCellDelegate {
-  optional func switchCellDidSwitchChanged(switchCell: SwitchCell)
+  @objc optional func switchCellDidSwitchChanged(_ switchCell: SwitchCell)
 }
 class SwitchCell: UITableViewCell {
 
@@ -17,7 +17,7 @@ class SwitchCell: UITableViewCell {
 
   weak var delegate: SwitchCellDelegate?
 
-  @IBAction func onSwitchChanged(sender: UISwitch) {
+  @IBAction func onSwitchChanged(_ sender: UISwitch) {
     delegate?.switchCellDidSwitchChanged?(self)
   }
 }
